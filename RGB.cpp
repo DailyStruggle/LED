@@ -22,34 +22,34 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include "LED.h"
+#include "RGB.h"
 
-void LED::setPins(uint8_t Rpin, uint8_t Gpin, uint8_t Bpin, uint8_t switchpin){
+void RGB::setPins(uint8_t Rpin, uint8_t Gpin, uint8_t Bpin, uint8_t switchpin){
 	RPIN = Rpin;
 	GPIN = Gpin;
 	BPIN = Bpin;
 	SPIN = switchpin;
 }
 
-void LED::setDial(uint16_t dialpos){
+void RGB::setDial(uint16_t dialpos){
 	setDial(dialpos, 255, 255);
 }
 
-void LED::setDial(uint16_t dialpos, uint8_t brightness){
+void RGB::setDial(uint16_t dialpos, uint8_t brightness){
 	setDial(dialpos, brightness, 255);
 }
 
-void LED::setDial(uint16_t dialpos, uint8_t brightness, uint8_t saturation) {
+void RGB::setDial(uint16_t dialpos, uint8_t brightness, uint8_t saturation) {
 	DIALtoRGB(dialpos);
 	setBrightness(brightness, saturation);
 	smoothSet(Rt, Gt, Bt, 9);
 }
 
-void LED::Flash(uint16_t dialpos, uint8_t brightness, uint8_t saturation, int spd){
+void RGB::Flash(uint16_t dialpos, uint8_t brightness, uint8_t saturation, int spd){
 	Flash(dialpos, brightness, saturation, spd, 0);
 }
 
-void LED::Flash(uint16_t dialpos, uint8_t brightness, uint8_t saturation, int spd, uint8_t smoothing) {
+void RGB::Flash(uint16_t dialpos, uint8_t brightness, uint8_t saturation, int spd, uint8_t smoothing) {
 	uint8_t bound = 1;
 	spd = spd - 10;
 	if (spd<1) {
@@ -102,7 +102,7 @@ void LED::Flash(uint16_t dialpos, uint8_t brightness, uint8_t saturation, int sp
 }
 
 
-void LED::fullCycle(uint8_t brightness, int spd) {
+void RGB::fullCycle(uint8_t brightness, int spd) {
 	//COLOR WHEEL CYCLE
 	//cycles through regular color wheel
 	uint8_t bound = 1;
@@ -130,7 +130,15 @@ void LED::fullCycle(uint8_t brightness, int spd) {
 	}
 }
 
-int LED::Cycle(uint8_t arraysize, uint16_t colors[], uint8_t brightness, int spd, uint8_t smoothing) {
+void RGB::Cycle(){
+	fullCycle(255, 10);
+}
+
+void RGB::Cycle(uint8_t brightness, int spd){
+	fullCycle(brightness, spd);
+}
+
+void RGB::Cycle(uint8_t arraysize, uint16_t colors[], uint8_t brightness, int spd, uint8_t smoothing) {
 
 	uint8_t bound = 1;
 	spd = spd - 10;
@@ -156,7 +164,7 @@ int LED::Cycle(uint8_t arraysize, uint16_t colors[], uint8_t brightness, int spd
 			Set(Rt, Gt, Bt);
 			resetvar();
 			for (int j = 0; j<bound; j++) {
-				if (interrupt()) return 0;
+				if (interrupt()) return;
 				delay(500 / spd);
 			}
 		}
@@ -169,18 +177,18 @@ int LED::Cycle(uint8_t arraysize, uint16_t colors[], uint8_t brightness, int spd
 			Gt = 0;
 			Bt = 0;
 			for (int j = 0; j<bound; j++) {
-				if (interrupt()) return 0;
+				if (interrupt()) return;
 				delay(t2);
 			}
 		}
 		
 	}
-	return 0;
+	return;
 }
 
 
 
-void LED::Start() {
+void RGB::Start() {
 	Set(0, 0, 0);
 	smoothSet(255, 0, 0, 10);
 	delay(150);
@@ -196,7 +204,7 @@ void LED::Start() {
 	delay(500);
 }
 
-void LED::Stop() {
+void RGB::Stop() {
 	smoothSet(0, 0, 0, 6);
 	analogWrite(RPIN, 0);
 	analogWrite(GPIN, 0);
@@ -205,7 +213,7 @@ void LED::Stop() {
 
 
 
-void LED::Set(uint8_t Rn, uint8_t Gn, uint8_t Bn) {
+void RGB::Set(uint8_t Rn, uint8_t Gn, uint8_t Bn) {
 	//save new values
 	R = Rn;
 	G = Gn;
@@ -217,7 +225,7 @@ void LED::Set(uint8_t Rn, uint8_t Gn, uint8_t Bn) {
 	return;
 }
 
-void LED::smoothSet(uint8_t Rn, uint8_t Gn, uint8_t Bn, int spd) {
+void RGB::smoothSet(uint8_t Rn, uint8_t Gn, uint8_t Bn, int spd) {
 	//low speed control setup
 	uint8_t bound = 1;
 	spd = spd - 10;
@@ -252,7 +260,7 @@ void LED::smoothSet(uint8_t Rn, uint8_t Gn, uint8_t Bn, int spd) {
 	return;
 }
 
-void LED::DIALtoRGB(uint16_t dialpos) {
+void RGB::DIALtoRGB(uint16_t dialpos) {
 	//circle shift
 	while (dialpos >= 360) dialpos -= 360;
 	uint16_t temp = dialpos;
@@ -280,7 +288,7 @@ void LED::DIALtoRGB(uint16_t dialpos) {
 	return;
 }
 
-void LED::setBrightness(uint8_t brightness, uint8_t saturation) {
+void RGB::setBrightness(uint8_t brightness, uint8_t saturation) {
 	if (!saturation) {
 		Rt = 255;
 		Gt = 255;
@@ -301,7 +309,7 @@ void LED::setBrightness(uint8_t brightness, uint8_t saturation) {
 	if (Bt>255)Bt = 255;
 }
 
-bool LED::interrupt() {
+bool RGB::interrupt() {
 	if (!digitalRead(SPIN)) return true;
 	if (Serial.available() > 0) return true;
 	return false;
@@ -309,7 +317,7 @@ bool LED::interrupt() {
 	resetvar();
 }
 
-void LED::resetvar() {
+void RGB::resetvar() {
 	R = 0;
 	G = 0;
 	B = 0;
