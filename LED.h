@@ -31,7 +31,7 @@ SOFTWARE.
 #include "arduino.h"
 #endif
 
-class LED {
+class RGB {
 public:
 	//set io pins
 	void setPins(uint8_t Rpin, uint8_t Gpin, uint8_t Bpin, uint8_t Spin);
@@ -43,9 +43,11 @@ public:
 	void setDial(uint16_t dialpos, uint8_t brightness);
 	void setDial(uint16_t dialpos, uint8_t brightness, uint8_t saturation); //set to position in color cylinder
 	void Flash(uint16_t dialpos, uint8_t brightness, uint8_t saturation, int spd); //flash given color at a speed
-	void Flash(uint16_t dialpos, uint8_t brightness, uint8_t saturation, int spd, uint8_t smoothing); //flash given color at a speed
+	void Flash(uint16_t dialpos, uint8_t brightness, uint8_t saturation, int spd, uint8_t smoothing); //pulse
 	void fullCycle(uint8_t brightness, int spd); //cycle through color wheel
-	int Cycle(uint8_t arraysize, uint16_t colors[], uint8_t brightness, int spd, uint8_t smoothing); //cycle through given set of colors
+	void Cycle();
+	void Cycle(uint8_t brightness, int spd);
+	void Cycle(uint8_t arraysize, uint16_t colors[], uint8_t brightness, int spd, uint8_t smoothing); //cycle through given set of colors
 																									 //smoothing affects the transition
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
@@ -68,3 +70,4 @@ private: //not referenced by other classes
 	uint8_t R = 0, G = 0, B = 0; //current RGB values
 	uint16_t Rt = 0, Gt = 0, Bt = 0; //desired RGB values, using 16-bit math, reduced to 8-bit
 };
+
