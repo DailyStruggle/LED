@@ -47,7 +47,7 @@ colors[] (0-360) - a given set of color-wheel colors
 
 FUNCTIONS:
 
-Set the color - setDial(uint16_t dialpos, uint8_t brightness, uint8_t saturation);
+setDial(uint16_t dialpos, uint8_t brightness, uint8_t saturation);
 *converts position on a circle to RGB values, adjusts the brightness and saturation levels, then changes the RGB output
 
 
