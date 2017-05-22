@@ -26,7 +26,7 @@ PURPOSE:
 give an arduino the functions of a standard RGB controller
 [Does not include interface code]
 
-I am now working on generalized audio functions.et me know if you have requests
+I am now working on generalized audio functions. Let me know if you have requests
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
